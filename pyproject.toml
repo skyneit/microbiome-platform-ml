@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "microbiome-platform-bias"
+version = "0.1.0"
+description = "Reproducible multi-model microbiome platform-bias and LOPO validation workflow"
+requires-python = ">=3.9"
+dependencies = [
+  "numpy>=1.23",
+  "pandas>=1.5",
+  "scipy>=1.9",
+  "scikit-learn>=1.2",
+  "xgboost>=1.7",
+  "matplotlib>=3.6",
+  "shap>=0.42",
+  "PyYAML>=6.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

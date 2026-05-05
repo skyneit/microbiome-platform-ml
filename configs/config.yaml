@@ -1,0 +1,93 @@
+project:
+  outdir: results/PlatformBiasChecks_AllModels
+  random_state: 42
+  n_jobs: 8
+
+inputs:
+  reference_meta_csv: data/raw/gtdbr6_nobatch.csv
+  csv_models:
+    Taxa-Genus: data/raw/gtdbr6_nobatch.csv
+    Taxa-Species: data/raw/gtdbrs6_nobatch.csv
+    Pathway: data/raw/pathwayn_nobatch.csv
+    MLP: data/raw/gtdbrs6_MLP.csv
+    Enterotype: data/raw/gtdbr6_Enterotype.csv
+  genus_function_long: data/raw/GenusFunction_nonzero.tsv.gz
+  genus_function_name: GenusXPathway
+
+analysis:
+  group_column: Group
+  sample_id_column: Sample_ID
+  platform_column: Platform
+  positive_label: D
+  negative_label: H
+  fl_platform_label: FL
+  min_nnz_train: 5
+  max_cv_splits: 5
+  min_test_n_lopo: 10
+  min_train_n_lopo: 20
+  min_within_platform_n: 20
+
+xgboost:
+  learning_rate: 0.1
+  n_estimators: 800
+  max_depth: 6
+  min_child_weight: 2
+  subsample: 0.8
+  colsample_bytree: 0.8
+  reg_alpha: 0.005
+  objective: binary:logistic
+  tree_method: hist
+  eval_metric: logloss
+
+shap:
+  enable: true
+  max_samples: 200
+  max_display: 30
+  seed: 42
+  models:
+    - Taxa-Genus
+    - Taxa-Species
+    - Enterotype
+    - MLP
+    - Pathway
+    - GenusXPathway
+
+plotting:
+  model_order:
+    - Taxa-Genus
+    - Taxa-Species
+    - Enterotype
+    - MLP
+    - Pathway
+    - GenusXPathway
+  model_color:
+    Taxa-Genus: '#0072B2'
+    Taxa-Species: '#56B4E9'
+    Enterotype: '#CC79A7'
+    MLP: '#009E73'
+    Pathway: '#E69F00'
+    GenusXPathway: '#D55E00'
+
+# Optional second pipeline: V4-vs-FL platform-held-out GroupKFold
+v4fl_groupkfold:
+  outdir: results/V4FL_GroupKFold_compare_SHAP
+  platforms_keep:
+    - V4
+    - FL
+  balance_method: weights   # weights or match
+  inner_cv: 5
+  min_common_samples: 30
+  sparse_bee_topk: 50
+  shap_models: all          # all or a YAML list of model names
+
+# Pipeline 01: single train/test model comparison with post-hoc recalibration
+model_compare_recalibration:
+  outdir: results/01_model_compare_recalibration
+  test_size: 0.30
+  min_common_samples: 20
+  min_nnz: 5
+  calibration_cv: 5
+  calibration_models:
+    - Taxa-Genus
+    - Taxa-Species
+    - GenusXPathway
