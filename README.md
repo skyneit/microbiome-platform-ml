@@ -113,3 +113,5 @@ The V4/FL GroupKFold pipeline uses training-fold-only recalibration to avoid inf
 ## Data availability
 
 Raw sequencing data are not included in this repository. Processed feature tables and metadata necessary to reproduce the reported machine-learning analyses should be provided when permitted by data-sharing agreements. Public cohort accession or Qiita identifiers should be listed in the manuscript Data Availability section.
+Processed data are available at:  
+(https://doi.org/10.5281/zenodo.20041336)   
